@@ -5,6 +5,7 @@ Version 1.0 (Oct 5, 2026)
 
 ## Change Log
 
+- Added Q&A Section
 - Draft 0.1 - initial version, for review before release.
 
 ## Introduction
@@ -358,3 +359,27 @@ save you time by catching your own bugs early rather than at the end.
   techniques as the number of sites grows. The two scale differently, and
   saying why, in terms of what each technique actually does per pixel, is
   worth more than the numbers alone.
+
+## Q&A
+
+**Q1: Can the sites be drawn using the same shader that draws the Voronoy diagrams?**
+
+A1: Not recommended! You would be adding two different aspects of the problem that largely increase the complexity of the final shader.
+
+**Q2: How many shaders are necessary?**
+
+A2: 4 or 6, depending if you solve the problem with just the simple search technique (1) or with the surfaces and depth buffer (2). So, the number of shaders expected to be necesary are: 2 for the search technique, 2 for the rendering of the sites and 2 for the surfaces and depth buffer technique.
+
+**Q3: How are the sites displayed?**
+
+A3: You should use the `gl.POINTS` primitive. Since the sites locations are already being passed as uniforms (for the search technique), you can use that fact and each vertex/point just need to know on which of points it is working on. This can be given by the `gl_vertexId` built-in variable. No need to put attributes inside buffers here.
+
+**Q4: Can the sites be rendered as squares?**
+
+A4: You are expected to use the built-in shader variables `gl_PointSize` (vertex shader) and `gl_PointCoord` (fragment shader).
+
+**Q5: I have implemented Pan and Zoom, how do I know if it is correct?**
+
+A5: For panning, regardless of the level of zoom you are at a given moment, as you click and drag the mouse, observe the mouse cursor as it moves, the sites should move at the same speed not faster or slower. For zooming you can either zoom while keeping the center point fixed or zoom about the point that corresponds to the mouse location.
+
+
