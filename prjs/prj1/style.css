@@ -1,0 +1,156 @@
+/* The canvas fills the whole browser window, with no margins and no
+   scrollbars. Its size in pixels is set from JavaScript (see resize() in
+   app.js), which is what WebGL actually draws into. */
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    border: 0;
+    overflow: hidden;
+}
+
+canvas {
+    display: block;     /* no gap under the canvas, as an inline element would leave */
+}
+
+/* A small label in the top-left corner, over the canvas, saying which
+   technique, metric and border setting are in use (see update_status() in
+   app.js). We let mouse events pass through it, so that clicking or
+   dragging over the label still reaches the canvas underneath. */
+
+#status {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    font: 13px monospace;
+    pointer-events: none;
+    user-select: none;
+}
+
+/* The results of the benchmark (see benchmark() in app.js), in the
+   bottom-left corner, with the same look as the status label. It stays
+   hidden until the first benchmark, and a click hides it again. */
+
+#benchmark {
+    display: none;
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    margin: 0;
+    padding: 6px 10px;
+    border-radius: 4px;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    font: 13px monospace;
+    cursor: pointer;
+}
+
+/* The options panel in the top-right corner, built by dat.gui in setup_gui()
+   in app.js. dat.gui adds its own style sheet to the page, with a flat grey
+   look; we restyle it to match the status label: the same translucent dark
+   background, rounded corners and monospace font, with thin rounded sliders.
+   Every selector below starts with .dg.main, which makes it more specific
+   than the rule of dat.gui it replaces, so ours always takes precedence. */
+
+.dg.main.a {
+    margin: 8px 8px 0 0;
+    border-radius: 6px;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.6);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.dg.main,
+.dg.main .c input[type=text] {
+    font: 12px monospace;
+    text-shadow: none;
+}
+
+.dg.main li.cr {
+    height: 30px;
+    line-height: 30px;
+    padding: 0 10px;
+    background: transparent;
+    border-bottom: 0;
+}
+
+/* When the panel is closed, dat.gui hides its rows by giving them no height,
+   with a rule exactly as specific as our li.cr rule above: which one wins
+   then depends on the browser. This rule is more specific than both, so the
+   rows always disappear when the panel is closed. */
+.dg.main ul.closed li.cr {
+    height: 0;
+    overflow: hidden;
+}
+
+.dg.main .cr.number,
+.dg.main .cr.boolean,
+.dg.main .cr.function {
+    border-left: 0;
+}
+
+/* the checkbox and the button rows light up under the pointer, instead of
+   dat.gui's near-black */
+.dg.main li.cr.boolean:hover,
+.dg.main li.cr.function:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.dg.main .c .slider {
+    height: 6px;
+    margin-top: 12px;
+    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.dg.main .c .slider-fg,
+.dg.main .c .slider:hover .slider-fg {
+    border-radius: 3px;
+    background: #5ec8f2;
+}
+
+.dg.main .c .slider:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.dg.main .cr.number input[type=text] {
+    margin-top: 6px;
+    padding: 2px 4px;
+    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    text-align: right;
+}
+
+.dg.main .cr.number input[type=text]:focus {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* The button that hides and shows the panel. app.js asks dat.gui to put it
+   at the top, where it becomes the panel's title bar: it shares the panel's
+   background, so we only give it its own text style and a clickable look.
+   dat.gui styles this button with .dg.main .close-button, exactly as
+   specific as that would be, and its style sheet comes after ours, so here
+   we add .a to stay ahead of it. */
+.dg.main.a .close-button,
+.dg.main.a .close-button:hover {
+    font: 11px monospace;   /* first: the font shorthand also resets line-height */
+    height: 26px;
+    line-height: 26px;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.7);
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.dg.main.a .close-button:hover {
+    color: white;
+    background: rgba(255, 255, 255, 0.08);
+}
